@@ -26,9 +26,9 @@ SECRET_KEY = 'django-insecure-1nyiiw)z)&8vug8vd(^$k7#=ktj)!_aset5)3nb_x@!m^5^n(5
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-# ALLOWED_HOSTS = ['sucrepo.onrender.com']
+ALLOWED_HOSTS = ['cooperativeapp.onrender.com']
 
-# CSRF_TRUSTED_ORIGINS = ['https://sucrepo.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://cooperativeapp.onrender.com']
 
 
 
