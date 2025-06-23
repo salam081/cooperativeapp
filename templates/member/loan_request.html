@@ -1,0 +1,187 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow col-md-12 ">
+            <div class="card-body">
+                
+                {% if settings %}
+                <h4 class="text-center text-primary mb-4">Request Loan Form</h4>
+                <form id="loanRequestForm" method="POST" enctype="multipart/form-data"
+                    action="{% url 'loan_request' %}">
+                    {% csrf_token %}
+
+                    <!-- Loan Type -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="loan_type" class="form-label">Loan Type <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select" id="loan_type" name="loan_type" required>
+                                <option value="" disabled selected>Choose a loan type</option>
+                                {% for loan_type in loan_types %}
+                                <option value="{{ loan_type.id }}">{{ loan_type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Loan Amount -->
+                        <div class="col-md-6 mb-3">
+                            <label for="amount" class="form-label">Loan Amount (₦) <span
+                                    class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="amount" name="amount" required
+                                placeholder="Enter amount" min="0">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Loan Term -->
+                        <div class="col-md-6 mb-3">
+                            <label for="loan_term_months" class="form-label">Loan Term (Months) <span
+                                    class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="loan_term_months" name="loan_term_months"
+                                required placeholder="Enter term in months" min="1">
+                        </div>
+                          <div class="col-md-6 mb-3">
+                            <label for="file_one" class="form-label">Account Number <span
+                                    class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="file_one" name="account_number">
+                        </div>
+                      
+                    </div>
+                    <div class="row">
+                        
+                        
+                         <!-- Bank Name -->
+                        <div class="col-md-6 mb-3">
+                            <label for="bank_name" class="form-label">Select Your Payment Bank  <span
+                                    class="text-danger">*</span></label>
+                            <select id="bank_name" name="bank_name" class="form-select" required>
+                                <option value="" disabled selected>Select Bank</option>
+                                {% for bank in bank_names %}
+                                <option value="{{ bank.id }}">{{ bank.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Bank Code (Auto-filled) -->
+                        <div class="col-md-6 mb-3">
+                            <label for="bank_code" class="form-label">Bank Code <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" id="bank_code" name="bank_code" class="form-control" readonly required>
+
+                        </div>
+                    </div>
+                     <div class="col-md-12 mb-3">
+                            <label for="file_one" class="form-label">Upload Payslip<span
+                                    class="text-danger">*</span></label>
+                            <input type="file" class="form-control" id="file_one" name="file_one">
+                        </div>
+                    <div class="row">
+                        <!-- Guarantor Name -->
+                        <div class="col-md-4 mb-3">
+                            <label for="guarantor_name" class="form-label">Guarantor Name <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="guarantor_name" name="guarantor_name"
+                                placeholder="Guarantor Name" required>
+                        </div>
+
+                        <!-- Guarantor IPPIS -->
+                        <div class="col-md-4 mb-3">
+                            <label for="guarantor_ippis" class="form-label">Guarantor IPPIS <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="guarantor_ippis" name="guarantor_ippis"
+                                placeholder="Guarantor IPPIS" required>
+                        </div>
+
+                        <!-- Guarantor Phone -->
+                        <div class="col-md-4 mb-3">
+                            <label for="guarantor_phone" class="form-label">Guarantor Phone <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="guarantor_phone" name="guarantor_phone"
+                                placeholder="Guarantor Phone" required>
+                        </div>
+                    </div>
+                    <!-- Submit -->
+                    <div class="d-flex">
+                        <button type="submit" class="btn btn-primary"> SubmitRequest</button>
+                    </div>
+
+                </form>
+                {% else %}
+                  <h3 class="text-center text-primary">Loan Protal Not Avelable </h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery for dependent dropdown -->
+<script src="/static/js/jquery.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+<script>
+    $('#bank_name').change(function () {
+        const bankId = $(this).val();
+        if (bankId) {
+            $.ajax({
+                url: "{% url 'ajax_load_bank_code' %}",
+                data: {
+                    'bank_id': bankId
+                },
+                success: function (data) {
+                    if (data.code) {
+                        $('#bank_code').val(data.code); // ✅ Just set the value
+                    } else {
+                        $('#bank_code').val(''); // Or show 'No code available'
+                    }
+                }
+            });
+        } else {
+            $('#bank_code').val('');
+        }
+    });
+</script>
+
+
+{% endblock %}
+
+<!-- 
+<div class="container mt-5 ">
+    <div class="card">
+        <div class="card-body">
+            <form id="loanRequestForm" method="POST" enctype="multipart/form-data" action="{% url 'loan_request' %}">
+                {% csrf_token %}
+                <div class="col-md-6 mb-3">
+                    <label for="loan_type" class="form-label">Loan Type <span class="text-danger">*</span></label>
+                    <select class="form-select" id="loan_type" name="loan_type" required>
+                        <option value="" disabled selected>Choose a loan type</option>
+                        {% for loan_type in loan_types %}
+                        <option value="{{ loan_type.id }}">{{ loan_type.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="invalid-feedback">Please select a loan type.</div>
+                </div>
+                <div class=" col-md-6 mb-3 ">
+                    <label for="amount" class="form-label">Loan Amount (₦) <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="amount" name="amount" required
+                        placeholder="Enter amount" min="0">
+                    <div class="invalid-feedback">Please enter a valid loan amount.</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="loan_term_months" class="form-label">Loan Term (Months) <span
+                            class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="loan_term_months" name="loan_term_months" required
+                        placeholder="Enter term in months" min="1">
+                    <div class="invalid-feedback">Please enter a valid loan term.</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="loan_term_months" class="form-label"> <span class="text-danger">*</span></label>
+                    <input type="file" class="form-control" id="file_one" name="file_one"
+                        placeholder="Enter term in months" min="1">
+                    <!-- <div class="invalid-feedback">Please enter a valid loan term.</div> -->
+                </div>
+                <button type="submit" class="btn btn-primary ">
+                    <i class="bi bi-send me-2"></i> Submit Request
+                </button>
+            </form>
+        </div>
+    </div>
+</div> -->

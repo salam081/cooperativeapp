@@ -1,0 +1,43 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="col-md-12">
+        <div class="card shadow col-md-12 ">
+            <div class="card-body">
+                  <div class="table-responsive">
+                <table class="table  align-middle table-bordered table-hover">
+                    <thead class="table-primary">
+                <thead>
+                    <th>S\N</th>
+                    <th>Full name</th>
+                    <th>Month</th>
+                    <!-- <th>monthly Deduction </th> -->
+                    <th>MonthlySavings</th>
+                </thead>
+                <tbody>
+                    
+                    {% for m in savings %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td class="text-nowrap text-truncate" style="max-width: 270px;">{{m.member}}</td>
+                        <td class="text-nowrap text-truncate" style="max-width: 250px;">{{m.month}}</td>
+                        <!-- <td>₦{{m.original_amount}}</td> -->
+                        <td>₦{{m.month_saving}}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-primary"><b>Total</b> : {{total_savings}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            
+        </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

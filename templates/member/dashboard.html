@@ -1,0 +1,240 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="container mt-0">
+    <!-- <div class="container"> -->
+    <h5 class="text-center ">Your Savings and Loan Summary</h5>
+    <div class="d-flex  py-2 p-4">
+    <li class="list-group-item col-md-4 shadow bg-primary text-white"><strong>Total Amount in Saving:  </strong>₦{{ total_savings|floatformat:2 }}</li>
+    <li class="list-group-item col-md-4 shadow bg-success text-white"><strong>Total Amount in Loanable:  </strong> ₦{{ loanable_total|floatformat:2 }}</li>
+    <li class="list-group-item col-md-4 shadow bg-warning text-white"><strong>Total Amount in Investment:  </strong> ₦{{ investment_total|floatformat:2 }}</li>
+    </div>
+    </div>
+<!-- <div class="row row-cols-1 row-cols-md-2 g-4"> -->
+    
+<!-- <div class="col-md-4">
+<div class="card shadow border-success mb-3" >
+    <div class="card-header text-success text-center">Monthly Saving</div>
+    <div class="card-body text-success">
+        <h6 class="card-title text-success">Current Month Saving</h6>
+        <h6 class="mb-0 text-success">₦{{ monthly_saving|floatformat:2 }}</h6>
+        <h6 class="card-title text-success">Previous Month Saving </h6>
+        <h6 class="card-text text-success fs-5">
+            {% if previous_monthly_saving %}
+            ₦{{ previous_monthly_saving|floatformat:2 }}
+            {% else %}
+            ₦0.00
+            {% endif %}
+        </h6>
+    </div>
+</div>
+</div> -->
+    <!-- <div class="col-md-6">
+        <div class="card shadow-lg border-primary mb-3" style="max-width: 600px;">
+            <div class="card-header text-center text-primary">Your Loan Summary</div>
+            <div class="card-body card-text text-primary ">
+                {% if loan %}
+                <ul class="list-unstyled">
+                    <li><strong>Requested Amount:</strong> ₦{{ loan.amount|floatformat:2 }}</li>
+                    <li><strong>Approved Amount:</strong> ₦{{ loan.approved_amount|floatformat:2 }}</li>
+                    <li><strong>Monthly Payment:</strong> ₦{{ monthly_payment|floatformat:2 }}</li>
+                    <li><strong>Amount Paid:</strong> ₦{{ loan_paid|floatformat:2 }}</li>
+                    <li><strong>Remaining Balance:</strong> ₦{{ loan_balance|floatformat:2 }}</li>
+                </ul>
+                {% else %}
+                <p class="text-muted text-primary">No active loan.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div> -->
+
+
+
+<!-- </div> -->
+<div class="col-md-12 p-4 mt-4">
+<div class="card shadow-lg  border-warning mb-3" >
+    <div class="card-header bg-light text-center ">
+       <h4 class="text-dark"> Your Loan Summary</h4>
+    </div>
+    <div class="card-body card-text text-danger">
+        {% if loan %}
+        {% if loan.status == 'rejected' %}
+        <p class="text-danger"><strong>Your loan request has been rejected.</strong></p>
+        {% if loan.rejection_reason %}
+        <p><strong>Reason:</strong> {{ loan.rejection_reason }}</p>
+        {% endif %}
+        {% else %}
+        <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <!-- <th>S/N</th> -->
+                <th class="text-nowrap text-truncate" style="max-width: 250px;">Requested Amount</th>
+                <th class="text-nowrap text-truncate" style="max-width: 250px;">Approved Amount</th>
+                <th class="text-nowrap text-truncate" style="max-width: 250px;">Monthly Payment</th>
+                <th class="text-nowrap text-truncate" style="max-width: 250px;">Amount Paid So Far</th>
+                <th class="text-nowrap text-truncate" style="max-width: 250px;">Remaining Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <!-- <td>{{forloop.counter}}</td> -->
+                <td>₦{{ loan.amount|floatformat:2 }}</td>
+                <td>₦{{ loan.approved_amount|floatformat:2 }}</td>
+                <td>₦{{ monthly_payment|floatformat:2 }}</td>
+                <td>₦{{ loan_paid|floatformat:2 }}</td>
+                <td>₦{{ loan_balance|floatformat:2 }}</td>
+            </tr>
+        </tbody>
+        </table>
+        </div>
+       
+        {% endif %}
+        {% else %}
+        <h4 class=" text-center text-primary">You have No active loan.</h4>
+        {% endif %}
+
+    </div>
+</div>
+</div>
+
+<div class="col-md-12 p-4 ">
+<div class="card shadow-lg  border-success " >
+<div class="card-header bg-light text-white">
+<h4 class="text-primary text-center">Your Consumable Requests Record</h4>
+</div>
+<div class="card-body ">
+{% if consumable_requests %}
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>S/N</th>
+                <th>Date Requested</th>
+                <th>Items</th>
+                <th>Status</th>
+                <th>Total Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in consumable_requests %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td class="text-nowrap text-truncate" style="max-width: 250px;">{{ request.date_created|date:"M d, Y H:i" }}</td>
+                   <td class="text-nowrap text-truncate" style="max-width: 255px;">
+                    <ul class="mb-0">
+                        {% for detail in request.details.all %}
+                        <li>
+                            {{ detail.item.title }} ({{ detail.quantity }} ×
+                            ₦{{detail.item_price|floatformat:2 }}) = ₦{{ detail.total_price|floatformat:2 }}
+                        </li>
+                        {% empty %}
+                        <li>No items found in this request.</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </td>
+                <td>
+                    <span class="badge fs-4
+                        {% if request.status == 'Approved' %}
+                            bg-success
+                        {% elif request.status == 'Declined' %}
+                            bg-danger
+                        {% elif request.status == 'Paid' %}
+                            bg-primary
+                        {% else %}
+                            bg-warning text-dark
+                        {% endif %}
+                    ">
+                        {{ request.status }}
+                    </span>
+                </td>
+             
+                <td><h5> ₦{{ request.calculate_total_price|floatformat:2 }}</h5></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="text-muted">You have Not made any consumable requests yet.</p>
+{% endif %}
+</div>
+</div>
+</div>
+
+
+{% if approved_consumable %} 
+<div class="col-md-12 p-4">
+<div class="card shadow-lg col-md-12 border-info mb-3">
+    <div class="card-header bg-light text-center ">
+        <h5 class="text-dark"> Consumable Loan Payment Summary</h5>
+    </div>
+    <div class="card-body text-danger">
+        <div class="table-responsive">
+  <table class="table table-bordered table-hover align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>S/N</th>
+            <th class="text-nowrap text-truncate" style="max-width: 270px;">Loan Amount</th>
+            <th>MonthlyPayment</th>
+            <th class="text-nowrap text-truncate" style="max-width: 270px;">Amount Paid So Far</th>
+            <th class="text-nowrap text-truncate" style="max-width: 270px;">Remaining Balance</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in approved_consumable %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>₦{{ item.approved_amount|floatformat:2 }}</td>
+            <td>₦{{ item.monthly_payment|floatformat:2 }}</td>
+            <td>₦{{ item.total_paid|floatformat:2 }}</td>
+            <td><h4> ₦{{ item.balance|floatformat:2 }}</h4></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<h4 class="text-primary">Total Remaining Balance For (All Your  Consumable Loan) = ₦{{ total_remaining|floatformat:2 }}</h4>
+</div>
+</div>
+</div>
+{% else %}
+<h4  class="text-center text-primary">You have No active  consumable Loan.</h4>
+{% endif %}
+</div>
+
+    <script>
+        // Function to reload the page
+        function reloadPage() {
+            window.location.reload();
+        }
+
+        //Prevent form resubmission on refresh
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+
+        //Form Validation
+        (() => {
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+            const loanRequestForm = document.getElementById('loanRequestForm');
+            if (loanRequestForm) {
+                loanRequestForm.addEventListener('submit', (event) => {
+                    if (!loanRequestForm.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    loanRequestForm.classList.add('was-validated')
+                }, false)
+            }
+        })()
+    </script>
+    {% endblock content %}

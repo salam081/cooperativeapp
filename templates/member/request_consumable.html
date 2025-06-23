@@ -1,0 +1,96 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Request Consumable{% endblock %}
+
+{% block content %}
+<div class="container mt-1 col-md-12">
+    <!-- <h2>Request Consumable </h2> -->
+
+    <!-- {% if messages %}
+    <div class="mt-3">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %} -->
+    <h3 class="text-center">Request Consumables</h3>
+
+    <div class="row">
+        <div class="card col-md-4">
+            <div class="card-header">Items and There Price</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table text-start bg-light align-middle table-bordered table-hover mb-0">
+                        <thead>
+                            <tr class="text-dark">
+                                <th scope="col">S/N</th>
+                                <th scope="col">Items</th>
+                                <th scope="col">Price</th>
+                        </thead>
+                        <tbody>
+
+                            {% for i in consumable_items %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{i.name}}</td>
+                                <td>{{i.price}}</td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card bg-light col-md-8">
+            <h4 class=" text-center text-primary">Select Items and Specify Quantity:</h4>
+
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3 col-md-12 ">
+                        {% for item in consumable_items %}
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="consumable_ids"
+                                        value="{{ item.id }}" id="consumable_{{ item.id }}">
+                                    <label class="form-check-label" for="consumable_{{ item.id }}">
+                                        {{ item.name }} ({{ item.description|truncatechars:50 }})
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="quantity_{{ item.id }}" class="form-label visually-hidden">Quantity for {{
+                                    item.name }}</label>
+                                <input type="number" class="form-control" id="quantity_{{ item.id }}"
+                                    name="quantity_{{ item.id }}" value="0" min="0">
+                                <small class="form-text text-muted">Quantity for {{ item.name }}</small>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p>No consumable items are currently available.</p>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="term_months" class="form-label">Term (Months):</label>
+                        <input type="number" class="form-control" id="term_months" name="term_months"
+                            placeholder="Enter Month" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="file" class="form-control" id="file_one" name="file_one" placeholder="Enter Month">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

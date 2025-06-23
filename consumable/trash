@@ -1,0 +1,207 @@
+def upload_consumable_payment(request):
+    available_requests = ConsumableRequest.objects.filter(status="Approved").select_related("user")
+    grouped_by_month = defaultdict(list)
+
+    for req in available_requests:
+        if req.balance() > 0:
+            month_key = req.date_created.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            grouped_by_month[month_key].append(req)
+
+    grouped_list = sorted(grouped_by_month.items())
+
+    if request.method == 'POST' and request.FILES.get("excel_file"):
+        selected_month_str = request.POST.get("selected_month")
+        if not selected_month_str:
+            messages.error(request, "No month selected.")
+            return redirect("upload_consumable_payment")
+
+        try:
+            selected_year, selected_month = map(int, selected_month_str.split("-"))
+        except Exception:
+            messages.error(request, "Invalid month format.")
+            return redirect("upload_consumable_payment")
+
+        matching_requests = ConsumableRequest.objects.filter(
+            status="Approved",
+            date_created__year=selected_year,
+            date_created__month=selected_month
+        ).select_related("user")
+
+        excel_file = request.FILES["excel_file"]
+        path = default_storage.save(f"uploads/{excel_file.name}", ContentFile(excel_file.read()))
+        abs_path = os.path.join(settings.MEDIA_ROOT, path)
+
+        try:
+            df = pd.read_excel(abs_path)
+
+            if not {"IPPIS", "Amount Paid"}.issubset(df.columns):
+                messages.error(request, "Excel must contain 'IPPIS' and 'Amount Paid' columns.")
+                return redirect("upload_consumable_payment")
+
+            for _, row in df.iterrows():
+                ippis_raw = row["IPPIS"]
+                try:
+                    ippis = str(int(float(ippis_raw))).strip()
+                except (ValueError, TypeError):
+                    messages.warning(request, f"Invalid IPPIS format: {ippis_raw}")
+                    continue
+
+                try:
+                    amount_paid = Decimal(str(row["Amount Paid"]))
+                except Exception:
+                    messages.warning(request, f"Invalid amount for IPPIS {ippis}")
+                    continue
+
+                member = Member.objects.filter(ippis=ippis).first()
+                if not member or not member.member:
+                    messages.warning(request, f"IPPIS {ippis} not linked to any user.")
+                    continue
+
+                user = member.member
+                user_request = matching_requests.filter(user=user).first()
+                if not user_request:
+                    messages.warning(request, f"No request found for IPPIS {ippis} in {selected_month_str}.")
+                    continue
+
+                existing_payment = PaybackConsumable.objects.filter(
+                    consumable_request=user_request,
+                    repayment_date__year=selected_year,
+                    repayment_date__month=selected_month
+                ).exists()
+
+                if existing_payment:
+                    messages.warning(request, f"Payment already exists for IPPIS {ippis} in {selected_month_str}.")
+                    continue
+
+                PaybackConsumable.objects.create(
+                    consumable_request=user_request,
+                    amount_paid=amount_paid,
+                    repayment_date=datetime.today().date()
+                )
+
+                if user_request.total_paid() >= user_request.calculate_total_price():
+                    user_request.status = 'Paid'
+                    user_request.save()
+
+            messages.success(request, "Payments uploaded successfully.")
+
+        except Exception as e:
+            messages.error(request, f"Error processing Excel file: {str(e)}")
+
+        return redirect("upload_consumable_payment")
+
+    return render(request, "consumables/upload_consumable_payment.html", {
+        "grouped_list": grouped_list
+    })
+
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.db import transaction
+from django.db.models import Sum
+from django.utils.dateparse import parse_date
+from decimal import Decimal
+from datetime import date
+from .models import Member, ConsumableRequest, PaybackConsumable
+
+def add_single_consumable_payment(request):
+    requests = []
+    selected_user = None
+    month_choices = []
+
+    # Generate month choices for the last 12 months
+    today = date.today()
+    for i in range(12):
+        m = (today.month - i - 1) % 12 + 1
+        y = today.year if today.month - i > 0 else today.year - 1
+        month_choices.append({
+            "label": date(y, m, 1).strftime("%B %Y"),
+            "value": date(y, m, 1).isoformat()
+        })
+
+    ippis = request.GET.get("ippis") or request.POST.get("ippis")
+    if ippis:
+        try:
+            member = Member.objects.filter(ippis=int(ippis)).first()
+            if member and member.member:
+                selected_user = member.member
+                requests = ConsumableRequest.objects.filter(
+                    user=selected_user
+                ).exclude(status='Paid').annotate(
+                    total_paid=Sum("repayments__amount_paid")
+                )
+        except Exception as e:
+            messages.error(request, f"Error fetching member: {e}")
+
+    if request.method == "POST":
+        amount_paid = request.POST.get("amount_paid")
+        month = request.POST.get("month")
+        request_id = request.POST.get("consumable_request")
+
+        if not ippis or not amount_paid or not month or not request_id:
+            messages.error(request, "All fields are required.")
+            return redirect(request.path + f"?ippis={ippis}")
+
+        try:
+            amount_paid = Decimal(amount_paid)
+            month = parse_date(month)
+            request_id = int(request_id)
+            if not month:
+                raise ValueError("Invalid date format.")
+        except Exception as e:
+            messages.error(request, f"Invalid input: {e}")
+            return redirect(request.path + f"?ippis={ippis}")
+
+        consumable_request = ConsumableRequest.objects.filter(id=request_id, user=selected_user).first()
+        if not consumable_request:
+            messages.error(request, "Selected consumable request not found.")
+            return redirect(request.path + f"?ippis={ippis}")
+
+        total_paid = PaybackConsumable.objects.filter(consumable_request=consumable_request).aggregate(
+            total=Sum("amount_paid")
+        )["total"] or Decimal('0')
+
+        remaining_balance = consumable_request.calculate_total_price() - total_paid
+
+        if amount_paid > remaining_balance:
+            messages.error(request, "Payment exceeds remaining balance.")
+            return redirect(request.path + f"?ippis={ippis}")
+
+        already_paid = PaybackConsumable.objects.filter(
+            consumable_request=consumable_request,
+            repayment_date__year=month.year,
+            repayment_date__month=month.month
+        ).exists()
+
+        if already_paid:
+            messages.warning(request, f"Payment already exists for {month.strftime('%B %Y')}.")
+            return redirect(request.path + f"?ippis={ippis}")
+
+        with transaction.atomic():
+            PaybackConsumable.objects.create(
+                consumable_request=consumable_request,
+                amount_paid=amount_paid,
+                repayment_date=month
+            )
+
+            new_total_paid = PaybackConsumable.objects.filter(consumable_request=consumable_request).aggregate(
+                total=Sum('amount_paid')
+            )['total'] or Decimal('0')
+
+            if new_total_paid >= consumable_request.calculate_total_price():
+                consumable_request.status = 'Paid'
+                consumable_request.save()
+
+        messages.success(request, f"Payment of ₦{amount_paid} recorded for {selected_user.first_name} ({ippis}).")
+        return redirect(request.path + f"?ippis={ippis}")
+
+    return render(request, "consumables/add_single_payment.html", {
+        "requests": requests,
+        "selected_user": selected_user,
+        "month_choices": month_choices
+    })
+
+
+

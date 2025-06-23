@@ -1,0 +1,132 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-5 col-md-6">
+    <h2 class="mb-4">Distribute Monthly Savings</h2>
+       <!-- Progress Bar -->
+          <div id="progressContainer" class="progress mt-3" style="display: none; height: 25px;">
+    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-info" style="width: 0%;">
+        0%
+    </div>
+</div>
+    <div class="card col-md-12">
+        <div class="card-body">
+            <form method="post" class="border p-4 shadow-sm bg-light" id="savingsForm">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="month" class="form-label">Select Month</label>
+                    <input type="month" name="month" id="month" class="form-control" required>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Distribute Savings Equally</button>
+                </div>
+            </form>
+
+         
+
+        </div>
+    </div>
+</div>
+<!-- <script>
+// Reusable CSRF getter
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + '=')) {
+                cookieValue = cookie.substring(name.length + 1);
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Handle form submission with progress bar
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('savingsForm');
+    if (!form) return;
+
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const monthValue = document.getElementById('month').value;
+        if (!monthValue) {
+            alert('Please select a month.');
+            return;
+        }
+
+        const formData = new FormData(form);
+
+        // Show progress container
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        progressContainer.style.display = 'block';
+        progressBar.style.width = '0%';
+        progressBar.innerText = '0%';
+        progressBar.className = 'progress-bar progress-bar-striped progress-bar-animated bg-info';
+
+        fetch('', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: formData
+        }).then(response => {
+            let progress = 0;
+            const interval = setInterval(() => {
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    progressBar.innerText = 'Done';
+                    if (response.ok) {
+                        progressBar.classList.remove('bg-info');
+                        progressBar.classList.add('bg-success');
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        progressBar.classList.remove('bg-info');
+                        progressBar.classList.add('bg-danger');
+                        progressBar.innerText = 'Failed';
+                    }
+                } else {
+                    progress += 5;
+                    progressBar.style.width = progress + '%';
+                    progressBar.innerText = progress + '%';
+                }
+            }, 300);
+        }).catch(error => {
+            console.error('Error:', error);
+            progressBar.classList.remove('bg-info');
+            progressBar.classList.add('bg-danger');
+            progressBar.style.width = '100%';
+            progressBar.innerText = 'Error';
+        });
+    });
+});
+</script> -->
+
+
+{% endblock content %}
+
+<!-- <div class="container mt-5 col-md-6">
+        <h2 class="mb-4">Distribute Monthly Savings</h2>
+<div class="card col-md-12">
+    <div class="caed-body">
+        <form method="post" class="border p-4 shadow-sm bg-light">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="month" class="form-label">Select Month</label>
+                <input type="month" name="month" id="month" class="form-control" required>
+            </div>
+            <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Distribute Savings Equally</button>
+        </div>
+          
+        </form>
+    </div>
+</div>
+       
+    </div> -->
+
+   

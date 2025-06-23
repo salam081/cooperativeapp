@@ -1,0 +1,29 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4 col-md-6" >
+    <!-- {% if messages %}
+    <div class="mt-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %} -->
+    <div class="card">
+        <div class="card-body">
+    <h5 class="text-primary">Upload Monthly Loan Payments</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="excel_file" class="form-label">Upload Excel File</label>
+            <input type="file" name="excel_file" id="excel_file" class="form-control" accept=".xlsx,.xls">
+        </div>
+        <div class="d-grid">
+        <button type="submit" class="btn btn-primary">Upload</button>
+      </div>
+    </form>
+</div>
+</div>
+   
+</div>
+{% endblock %}

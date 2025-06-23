@@ -1,0 +1,164 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <!-- Header and Search -->
+    <div class="mb-4">
+        <h4 class="text-primary text-center mb-3">Request Loan List</h4>
+        <form method="GET" action="{% url 'requested_loan' %}">
+            <div class="row g-2">
+                <div class="col-6 col-md-4">
+                    <input type="text" name="search_term" class="form-control" placeholder="Enter Search"
+                        value="{{ search_term }}">
+                </div>
+                <div class="col-6 col-md-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-outline-primary w-100 w-md-auto">Search</button>
+                    {% if results.paginator.count > 0 %}
+                    <button type="submit" name="download_pdf" value="1"
+                        class="btn btn-outline-danger w-100 w-md-auto">PDF</button>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% if results %}
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table table-sm align-middle table-bordered table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th class="text-nowrap" style="min-width: 150px;">Full Name</th>
+                    <th class="text-nowrap" style="min-width: 120px;">Loan Type</th>
+                    <th class="text-nowrap" style="min-width: 140px;">Requested Amount</th>
+                    <th class="text-nowrap" style="min-width: 140px;">Approved Amount</th>
+                    <th class="text-nowrap" style="min-width: 100px;">Status</th>
+                    <th class="text-nowrap" style="min-width: 120px;">Action</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                {% for loan in results %}
+                <tr>
+                    <td class="text-nowrap text-truncate" style="max-width: 180px;">{{ loan.member }}</td>
+                    <td class="text-nowrap text-truncate" style="max-width: 250px;">{{ loan.loan_type }}</td>
+                    <td class="loan-amount text-nowrap">₦{{ loan.amount|intcomma }}</td>
+                    <td class="text-nowrap">₦{{ loan.approved_amount|intcomma }}</td>
+                    <td class="text-capitalize text-nowrap">{{ loan.status }}</td>
+                    <td>
+                        {% if loan.status == 'approved' %}
+                        <button class="btn btn-success btn-sm w-100" disabled>Approved</button>
+                        {% elif loan.status == 'rejected' %}
+                        <button class="btn btn-danger btn-sm w-100" disabled>Rejected</button>
+                        {% elif loan.status == 'paid' %}
+                        <button class="btn btn-secondary btn-sm w-100" disabled>Paid</button>
+                        {% else %}
+                        <div class="d-flex flex-wrap gap-1">
+                            <a href="{% url 'approve_loan_request' loan.id %}" class="btn btn-success btn-sm"><i
+                                    class="bi bi-check"></i></a>
+                            <a href="{% url 'edit_requested_loan' loan.id %}" class="btn btn-info btn-sm"><i
+                                    class="bi bi-pencil-fill"></i></a>
+                            <a href="{% url 'reject_loan_request' loan.id %}" class="btn btn-danger btn-sm"><i
+                                    class="bi bi-backspace-reverse"></i></a>
+                        </div>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No loans found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Totals by Status -->
+    <div class="row mt-4">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card shadow">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-primary text-white">Total Approved Amount: ₦{{
+                        total_approved_amount|floatformat:2 }}</li>
+                    <li class="list-group-item bg-success text-white">Total Pending Amount: ₦{{
+                        total_pending|floatformat:2 }}</li>
+                    <li class="list-group-item bg-info text-white">Total Paid Amount: ₦{{ total_repaid|floatformat:2 }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-4">
+        <nav aria-label="Loan pagination">
+            <ul class="pagination justify-content-center">
+                {% if results.has_previous %}
+                <li class="page-item">
+                    <a class="page-link"
+                        href="?page={{ results.previous_page_number }}&search_term={{ search_term }}">Previous</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                {% endif %}
+
+                {% for num in results.paginator.page_range %}
+                {% if results.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% elif num >= results.number|add:-2 and num <= results.number|add:2 %} <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}&search_term={{ search_term }}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if results.has_next %}
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="?page={{ results.next_page_number }}&search_term={{ search_term }}">Next</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                    {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Total Loan JS Output -->
+    <p class="text-center mt-3">
+        <span class="text-dark" id="total-loan-amount"></span>
+    </p>
+
+    {% else %}
+    <p class="text-center text-muted mt-4">No loan results found for your search.</p>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const loanAmountCells = document.querySelectorAll('.loan-amount');
+        let total = 0;
+
+        loanAmountCells.forEach(cell => {
+            const valueText = cell.textContent.replace(/[₦,]/g, '').trim();
+            const value = parseFloat(valueText);
+            if (!isNaN(value)) {
+                total += value;
+            }
+        });
+
+        const formatter = new Intl.NumberFormat('en-NG', {
+            style: 'currency',
+            currency: 'NGN',
+            minimumFractionDigits: 2
+        });
+
+        const totalElement = document.getElementById('total-loan-amount');
+        if (totalElement) {
+            totalElement.innerHTML = `<strong>Total Request Loan Amount (This Page): ${formatter.format(total)}</strong>`;
+        }
+    });
+</script>
+{% endblock content %}

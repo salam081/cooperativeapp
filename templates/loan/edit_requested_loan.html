@@ -1,0 +1,52 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- {% if messages %}
+    <div class="mt-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %} -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="card shadow-lg rounded">
+              <div class="card-header text-center bg-primary text-white">
+                <h4>Edit Member Loan Request</h4>
+              </div>
+    <div class="card ">
+        <div class="card-body">
+            <form  method="POST" action="">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="loan_type" class="form-label">Loan Type</label>
+                    <select class="form-select" id="loan_type" name="loan_type" required>
+                        <option value="">Choose a loan type</option>
+                        {% for loan_type in loan_types %}
+                            <option  value="{{ loan_type.id }}" {% if loan_type.id == member.loan_type.id %} selected {% endif %}>{{ loan_type.name }}  </option>
+                        {% endfor %}
+                       
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Loan Amount</label>
+                    <input type="number" class="form-control"id="amount" name="amount"  value="{{loanobj.amount}}" required >
+                </div>
+                <div class="mb-3">
+                    <label for="loan_term_months" class="form-label">Loan Term (in months)</label>
+                    <input type="number"class="form-control"id="loan_term_months"name="loan_term_months"value="{{loanobj.loan_term_months}}"  required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Request</button>
+            </form> 
+        </div>
+    </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock content  %}

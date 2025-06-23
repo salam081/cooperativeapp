@@ -1,0 +1,15 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Record Consumable Repayment</h3>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">{{ form.user.label_tag }} {{ form.user }}</div>
+        <div class="mb-3">{{ form.consumable_request.label_tag }} {{ form.consumable_request }}</div>
+        <div class="mb-3">{{ form.amount_paid.label_tag }} {{ form.amount_paid }}</div>
+        <div class="mb-3">{{ form.repayment_date.label_tag }} {{ form.repayment_date }}</div>
+        <button class="btn btn-primary" type="submit">Submit Payment</button>
+    </form>
+</div>
+{% endblock %}

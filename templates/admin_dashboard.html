@@ -1,0 +1,128 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+{% block content %} 
+
+<div class="container-fluid">
+  <!-- Sale & Revenue Start -->
+  <div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-6 text-center col-xl-3   ">
+            <div class="bg-primary rounded d-flex align-items-center justify-content-center p-4">
+                <!-- <i class="fa fa-chart-line fa-3x text-primary"></i> -->
+                <div class="ms-3 text-white">
+                    <p class="mb-2"> Numbers Of Members</p>
+                    <h4 class="mb-0 text-white text-center">{% if total_members %}{{ total_members|intcomma }}{% else %}0{% endif %}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6  text-center col-xl-3">
+            <div class="bg-danger rounded d-flex align-items-center justify-content-center p-4">
+                <!-- <i class="fa fa-chart-line fa-3x text-primary"></i> -->
+                
+                <div class="ms-3">
+                    <p class="mb-2 text-white"> Total Savings</p>
+                    <h6 class="mb-0 text-white text-center">₦{% if total_savings %}{{ total_savings|intcomma }}{% else %}0{% endif %}</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6  text-center col-xl-3">
+            <div class="bg-info rounded d-flex align-items-center justify-content-center p-4">
+                <!-- <i class="fa fa-chart-area fa-3x text-primary"></i> -->
+                <div class="ms-3">
+                    <p class="mb-2 text-white"> Total Admin Fee</p>
+                    <h6 class="mb-0 text-white text-center">₦{% if total_interest %}{{ total_interest|intcomma }}{% else %}0{% endif %}</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 text-center col-xl-3">
+            <div class="bg-success rounded d-flex align-items-center justify-content-center p-4">
+                  <a class="btn btn-success px-4 float-end" href="{% url 'financial_list' %}">
+                <div class="ms-3 ">
+                    <p class="mb-2 text-center text-white">Total savings & Admin Fee </p>
+                    <h6 class="mb-0 text-white text-center">₦{% if grand_total %}{{ grand_total|intcomma }}{% else %}0{% endif %}</h6>
+                </div>
+                </a>
+            </div>
+        </div>
+        <!-- <div class="col-sm-6  col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-area fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Pending Loans Request</p>
+                    <h6 class="mb-0">{% if pending_loans %}{{ pending_loans|intcomma }}{% else %}0{% endif %}</h6>
+                </div>
+            </div>
+        </div> -->
+        <div class="col-sm-6  col-xl-3">
+            <div class="bg-dark rounded d-flex align-items-center justify-content-center p-4">
+                <!-- <i class="fa fa-chart-pie fa-3x text-primary"></i> -->
+                <div class="ms-3 ">
+                    <p class="mb-2 text-center text-white">Total Investment & Loanable </p>
+                    <h6 class="mb-0 text-center text-white">₦{% if investment_loanable %}{{ investment_loanable|intcomma }}{% else %}0{% endif %}</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6  col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-center p-4">
+                <!-- <i class="fa fa-chart-pie fa-3x text-primary"></i> -->
+                <a href="{% url 'requested_loan' %}">
+                <div class="ms-3  text-white">
+                    <p class="mb-2"> Pending Loan Request</p>
+                    <h6 class="mb-0 text-center text-white">{% if pending_loans %}{{ pending_loans|intcomma }}{% else %}0{% endif %}</h6>
+                </div>
+            </a>
+            </div>
+        </div>
+        <div class="col-sm-6  col-xl-3">
+            <div class="bg-warning  rounded d-flex align-items-center justify-content-center p-4">
+                <!-- <i class="fa fa-chart-line fa-3x text-primary"></i> -->
+                <a href="{% url 'consumable_requests_list' %}">
+                <div class="ms-3  text-center text-white ">
+                    <p class="mb-2">Pending Consumable Request</p>
+                    <h6 class="mb-0 text-center text-white">{% if pending_consumable %}{{ pending_consumable|intcomma }}{% else %}0{% endif %}</h6>
+                </div>
+                    </a>
+            </div>
+        </div>
+        <div class="col-sm-6  col-xl-3">
+            <div class="bg-danger border-primary rounded d-flex align-items-center justify-content-center p-4">
+                <a href="{% url 'all_reject_loan' %}">
+                <div class="ms-3  text-center text-white ">
+                    <p class="mb-2">Rejected Loan Request</p>
+                    <h6 class="mb-0 text-center text-white">{{rejected_loans}}</h6>
+                </div>
+                    </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Sale & Revenue End -->
+
+
+
+
+    
+    <!-- <h2 class="mt-4">Loan Types</h2>
+    <div class="row">
+        {% for loan_type in loan_types %}
+            <div class="col-md-4 mb-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ loan_type.name }}</h5>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">No loan types available.</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div> -->
+</div>
+</main>
+
+{% endblock content %} 

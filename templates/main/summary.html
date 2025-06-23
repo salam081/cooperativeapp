@@ -1,0 +1,112 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+
+{% block content %}
+<h2 class="text-center mb-2">Monthly Summary</h2>
+<div class="container-fluid  px-4">
+    <div class="  rounded p-4">
+
+   
+    <h3 class="text-primary">Savings</h3>
+    <div class="table-responsive">
+        <table class="table text-start align-middle table-striped table-bordered table-hover mb-0">
+            <thead class="table-light ">
+                <tr><th>Month</th><th>Year</th><th>Total</th></tr>
+            </thead>
+            <tbody>
+                {% for item in savings_monthly %}
+                <tr>
+                    <td>{{ item.month }}</td>
+                    <td>{{ item.year }}</td>
+                    <td>₦{{ item.total|floatformat:2|intcomma }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <p class="text-end fw-bold">Total Savings: ₦{{ total_savings }}</p>
+
+    <hr>
+
+   
+    <h3 class="text-primary">Interest</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped ">
+            <thead class="table-light">
+                <tr><th>Month</th><th>Year</th><th>Total</th></tr>
+            </thead>
+            <tbody>
+                {% for item in interest_monthly %}
+                <tr>
+                    <td>{{ item.month }}</td>
+                    <td>{{ item.year }}</td>
+                    <td>₦{{ item.total|floatformat:2|intcomma }}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <p class="text-end fw-bold">Total Interest: ₦{{ total_interest }}</p>
+
+    <hr>
+
+    <h3 class="text-primary">Loanable</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped text-center">
+            <thead class="table-light">
+                <tr><th>Month</th><th>Year</th><th>Total</th></tr>
+            </thead>
+            <tbody>
+                {% for item in loanable_monthly %}
+                <tr>
+                    <td>{{ item.month }}</td>
+                    <td>{{ item.year }}</td>
+                    <td>₦{{ item.total|floatformat:2|intcomma }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <p class="text-end fw-bold">Total Loanable: ₦{{ total_loanable }}</p>
+
+    <hr>
+
+    <h3 class="text-primary">Investment</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped text-center">
+            <thead class="table-light">
+                <tr><th>Month</th><th>Year</th><th>Total</th></tr>
+            </thead>
+            <tbody>
+                {% for item in investment_monthly %}
+                <tr>
+                    <td>{{ item.month }}</td>
+                    <td>{{ item.year }}</td>
+                    <td>₦{{ item.total|floatformat:2|intcomma }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <p class="text-end fw-bold">Total Investment: ₦{{ total_investment }}</p>
+
+    <hr class="my-4">
+
+  <div class="row">
+      <div class="text-center col-sm-6">
+         <h5 class="text-success">Grand Total For All Members Savings</h5>
+         <p class="lead fw-bold">₦{{ total_savings|floatformat:2 }}</p>
+     </div>
+     <div class="text-center col-sm-6">
+        <h5 class="text-success">Grand Total For All Tables in this Page </h5>
+        <p class="lead fw-bold">₦{{ grand_total|floatformat:2 }}</p>
+    </div>
+</div>
+
+
+</div>
+</div>
+</div>
+{% endblock content %}
+
+         

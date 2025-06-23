@@ -1,0 +1,55 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4 col-md-12">
+    <div class="row">
+    <div class="card col-md-4 shadow border-primary">
+        <h5 class="card-header text-primary text-center"> Loan Type List</h5>
+        <div class="card-body">
+          {% for l in loan_types %}
+          <ul>
+          <li>{{l.name}}</li>
+          </ul>
+             
+          {% endfor %}
+            
+
+        </div>
+    </div>
+   
+    <div class="card col-md-8  p-4 shadow border-primary">
+        <h5 class="card-header text-primary text-center">Add Loan Type </h5>
+        <div class="card-body">
+
+            <form method="post" class="p-4 border rounded bg-light shadow-sm">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <b class="text-danger text-lg"> *</b>
+                    <input type="text" name="name" id="name" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <textarea name="description" id="description" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="max_amount" class="form-label">Max Amount:</label>
+                    <input type="number" name="max_amount" id="max_amount" step="0.01" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label for="max_loan_term_months" class="form-label">Max Loan Term (months):</label>
+                    <input type="number" name="max_loan_term_months" id="max_loan_term_months" class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Add Loan Type</button>
+            </form>
+
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock content %}

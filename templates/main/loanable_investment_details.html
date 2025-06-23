@@ -1,0 +1,162 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container col-md-9">
+
+    <h2 class="text-center mb-4">Details for {{ month_name }} {{ year }}</h2>
+
+    <div class="card col-md-12">
+        <div class="card-body">
+            
+            <!-- LOANABLE SECTION -->
+            <div class="mb-5">
+                <h3 class="text-center">Loanable</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-success">
+                            <tr>
+                                <th>Member ID</th>
+                                <th>Member</th>
+                                <th>Amount</th>
+                                <th>Month</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in loanables %}
+                            <tr>
+                                <td>{{ item.member.member.member_number }}</td>
+                                <td>{{ item.member }}</td>
+                                <td>₦{{ item.amount }}</td>
+                                <td>{{ item.month }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2">No Loanable records found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot class="table-secondary">
+                            <tr>
+                                <th></th>
+                                <th>Total Loanable</th>
+                                <td>₦{{ total_loanable }}</td>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    {% if loanables.has_other_pages %}
+    <nav>
+        <ul class="pagination justify-content-center mt-3">
+            {% if loanables.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?loanable_page={{ loanables.previous_page_number }}{% if investment_page %}&investment_page={{ investment_page }}{% endif %}">Previous</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+            {% endif %}
+            
+            {% for num in loanables.paginator.page_range %}
+            {% if loanables.number == num %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?loanable_page={{ num }}{% if investment_page %}&investment_page={{ investment_page }}{% endif %}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            
+            {% if loanables.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?loanable_page={{ loanables.next_page_number }}{% if investment_page %}&investment_page={{ investment_page }}{% endif %}">Next</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">Next</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    <!-- INVESTMENT SECTION -->
+    <div class="card col-md-12">
+        <div class="card-body">
+
+            <div>
+                <h3 class="text-center">Investment</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover ">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Member ID</th>
+                                <th>Member</th>
+                                <th>Amount</th>
+                                <th>Month</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in investments %}
+                            <tr>
+                                <td>{{ item.member.member.member_number }}</td>
+                                <td>{{ item.member }}</td>
+                                <td>₦{{ item.amount }}</td>
+                                <td>{{ item.month }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2">No Investment records found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot class="table-secondary">
+                            <tr>
+                                <th></th>
+                                <th>Total Investment</th>
+                                <td>₦{{ total_investment }}</td>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+              
+            </div>
+
+        </div>
+    </div>
+      {% if investments.has_other_pages %}
+                <nav>
+                    <ul class="pagination justify-content-center mt-3">
+                        {% if investments.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?investment_page={{ investments.previous_page_number }}{% if loanable_page %}&loanable_page={{ loanable_page }}{% endif %}">Previous</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                        {% endif %}
+
+                        {% for num in investments.paginator.page_range %}
+                        {% if investments.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?investment_page={{ num }}{% if loanable_page %}&loanable_page={{ loanable_page }}{% endif %}">{{ num }}</a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if investments.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?investment_page={{ investments.next_page_number }}{% if loanable_page %}&loanable_page={{ loanable_page }}{% endif %}">Next</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link">Next</span></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+</div>
+{% endblock content %}

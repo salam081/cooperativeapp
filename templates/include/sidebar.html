@@ -1,0 +1,104 @@
+<!-- Sidebar Start -->
+<div class="sidebar pe-4 pb-3">
+    <nav class="navbar bg-light navbar-light">
+        <a href="/" class="navbar-brand mx-4 mb-3">
+            <h3 class="text-primary"></i>Apps</h3>
+        </a>
+        <!-- <div class="d-flex align-items-center ms-4 mb-4">
+            <div class="position-relative">
+                <img class="rounded-circle" src="/static/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+            </div>
+            <div class="ms-3">
+                <h6 class="mb-0">{{request.user.first_name}}</h6>
+                
+            </div>
+        </div> -->
+        <div class="navbar-nav w-100">
+            
+            {% if user.is_authenticated and user.group.title == 'admin' %}
+            <a href="{% url 'admin_dashboard' %}" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+            <a href="{% url 'summary' %}" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Summary </a>
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-user me-2"></i>Members</a>
+                <div class="dropdown-menu bg-transparent border-0">
+                    <a href="{% url 'upload_users' %}" class="dropdown-item mb-2">Upload Members</a>
+                    <a href=" {% url 'all_members' %}" class="dropdown-item mb-2">View members  </a>
+                    <!-- <a href=" {% url 'interest_form' %}" class="dropdown-item">Take Interest </a> -->
+                    <!-- <a href=" {% url 'distribute_savings' %}" class="dropdown-item">Distribute Savings </a> -->
+                    <!-- <a href="{% url 'summary' %}" class="dropdown-item">summary page</a> -->
+                    <!-- <a href="{% url 'loanable_investment_months' %}" class="dropdown-item">loanable investment months</a> -->
+                    <a href="{% url 'member_check' %}" class="dropdown-item">Register Member</a>
+                    <a href="element.html" class="dropdown-item">Other Elements</a>
+                </div>
+            </div>
+                    <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Savings</a>
+                <div class="dropdown-menu bg-transparent border-0">
+                    <a href="{% url 'all_member_saving_search' %}" class="dropdown-item mb-2">Members Saving</a>
+                    <a href="{% url 'upload_savings' %}" class="dropdown-item mb-2">Upload Monthly Saving</a>
+                    <a href="{% url 'get_upload_savings' %}" class="dropdown-item mb-2">View Upload Saving</a>
+                    <a href="{% url 'interest_form' %}" class="dropdown-item mb-2">Take Admin Fee</a>
+                    <a href="{% url 'get_upload_interest' %}" class="dropdown-item mb-2">View Admin Fee</a>
+                    <a href="{% url 'distribute_savings' %}" class="dropdown-item mb-2">Distribute Savings to Loan/Invest</a>
+                    <a href="{% url 'loanable_investment_months' %}" class="dropdown-item mb-2">Loanable Investment Months</a>
+                    <a href="{% url 'summary' %}" class="dropdown-item mb-2">Summary Page</a>
+                    <a href="element.html" class="dropdown-item">Other Elements</a>
+                </div>
+            </div>
+
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-table me-2"></i>Loan</a>
+                <div class="dropdown-menu bg-transparent border-0">
+                   
+                    <a href="{% url 'requested_loan' %}" class="dropdown-item mb-2"> Approve Loan Request</a>
+                    <a href="{% url 'add_loan_type' %}" class="dropdown-item mb-2"> Add Type Loan</a>
+                    <a href="{% url 'loan_years_list' %}" class="dropdown-item mb-2">  Loan Request List </a>
+                    <a href="{% url 'all_reject_loan' %}" class="dropdown-item mb-2">  All Reject loan</a>
+                    <a href="{% url 'upload_loan_payment' %}" class="dropdown-item mb-2">Upload Loan Payment</a>
+                    <a href="{% url 'add_single_loan_payment' %}" class="dropdown-item mb-2">Add Single Loan Payment</a>
+                    <a href="{% url 'filtered_loan_repayments' %}" class="dropdown-item mb-2">filtered Repayments</a>
+                     
+                </div>
+            </div>
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-table me-2"></i>Consumable</a>
+                <div class="dropdown-menu bg-transparent border-0">
+                    <a href="{% url 'consumable_items' %}" class="dropdown-item">Consumable Items</a>
+                    <a href="{% url 'consumable_requests_list' %}" class="dropdown-item mb-2">Approve Consumable</a>
+                    <a href="{% url 'consumable_requests_by_month' %}" class="dropdown-item mb-2">All Consumable By Month</a>
+                    <a href="{% url 'upload_consumable_payment' %}" class="dropdown-item mb-2">Upload Consumable Payments</a>
+                    <a href="{% url 'consumable_repayments_list' %}" class="dropdown-item mb-2">Consumable Repayments List</a>
+                    <a href="{% url 'add_single_consumable_payment' %}" class="dropdown-item mb-2">Add single Payments</a>
+
+                     
+                </div>
+            </div>
+           
+            {% else %}
+            <a href="{% url 'member_dashboard' %}" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+            <a href="{% url 'member_savings' %}" class="nav-item nav-link active"><i class="fa fa-chart-bar me-2"></i>My Savings</a>
+            <a href="{% url 'loan_request' %}" class="nav-item nav-link active"><i class="fa fa-chart-bar me-2"></i>Request Loan</a>
+            <a href="{% url 'member_request_consumable' %}" class="nav-item nav-link active"><i class="fa fa-chart-bar me-2"></i>Consumable</a>
+            
+            {% endif %}
+                
+        <div class="navbar-nav w-100">
+            <!-- <a href="index.html" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a> -->
+            <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Widgets</a>
+            <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Forms</a>
+            <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Tables</a>
+            <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
+                <div class="dropdown-menu bg-transparent border-0">
+                    <a href="signin.html" class="dropdown-item">Sign In</a>
+                    <a href="signup.html" class="dropdown-item">Sign Up</a>
+                    <a href="404.html" class="dropdown-item">404 Error</a>
+                    <a href="blank.html" class="dropdown-item">Blank Page</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+<!-- Sidebar End -->

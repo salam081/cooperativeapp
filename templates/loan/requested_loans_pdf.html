@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 5px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h3, h4 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h3>Loan Requests - Search Term: "{{ search_term }}"</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>IPPIS</th>
+                <th>Loan Type</th>
+                <th>Loan Amount</th>
+                <th>Status</th>
+                <th>Loan Term</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan in results %}
+            <tr>
+                <td>{{ loan.member.member.first_name }} {{ loan.member.member.last_name }}</td>
+                <td>{{ loan.member.ippis }}</td>
+                <td>{{ loan.loan_type }}</td>
+                <td>₦{{ loan.amount|floatformat:2 }}</td>
+                <td>{{ loan.status }}</td>
+                <td>{{ loan.loan_term_months }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4>Total Loan Amount by Status</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th>Total Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for status, total in totals_by_status.items %}
+            <tr>
+                <td>{{ status|title }}</td>
+                <td>₦{{ total|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

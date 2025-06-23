@@ -1,0 +1,68 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-1 col-md-8">
+    {% if results %}
+    <h4 class="mb-4 text-center">Search Results</h4>
+    <div class="card bg-light col-md-12">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover text-center align-middle">
+                    <thead class="table-success">
+                        <tr>
+                            <th>Full Name</th>
+                            <th>IPPIS</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in results %}
+                        <tr>
+                            <td>{{ member.member }}</td>
+                            <td>{{ member.ippis }}</td>
+                            <td>
+                                <a href="{% url 'add_individual_savings' id=member.id %}" class="btn btn-success"> Add Savings </a>
+                               
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination justify-content-center mt-3">
+                <ul class="pagination">
+                    {% if results.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?search_term={{ search_term }}&page=1">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="?search_term={{ search_term }}&page={{ results.previous_page_number }}">Previous</a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item disabled">
+                        <span class="page-link">Page {{ results.number }} of {{ results.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if results.has_next %}
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="?search_term={{ search_term }}&page={{ results.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="?search_term={{ search_term }}&page={{ results.paginator.num_pages }}">Last</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <p class="text-muted">No members found matching your search criteria.</p>
+    {% endif %}
+</div>
+{% endblock content %}

@@ -1,0 +1,33 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card ">
+        <div class="card-body">
+            <h2 class="text-center text-primary"> Loans List By years</h2>
+
+
+            {% for year, loan_types in year_to_loan_types.items %}
+
+            <h3>
+                <strong>{{ year }}</strong>:
+            </h3>
+
+            <ol>
+                {% for loan_type in loan_types %}
+                <li>
+
+                    <a href="{% url 'loans_by_year' year=year loan_type_filter=loan_type %}">{{ loan_type }}</a>
+                </li>
+
+                {% if not forloop.last %} {% endif %}
+                {% endfor %}
+
+            </ol>
+
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+{% endblock content %}

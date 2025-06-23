@@ -1,0 +1,64 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4 col-md-6">
+   
+    <div class="card bg-light shadow">
+        <h5 class="card-header text-primary text-center">Add  Consumable Payment</h5>
+        <div class="card-body">
+             <form method="GET" class="mb-3">
+                <label for="ippis">Search by IPPIS:</label>
+                <div class="input-group">
+                    <input class="form-control" type="number" name="ippis" placeholder="Enter IPPIS" value="{{ selected_user.ippis|default:'' }}">
+                    <button class="btn btn-secondary" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if selected_user %}
+    <div class="card mt-4 shadow">
+        <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <!-- <label>IPPIS:</label> -->
+                        <input type="number" hidden class="form-control" name="ippis" required value="{{ selected_user.ippis }}" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Amount Paid:</label>
+                        <input class="form-control" type="number" step="0.01" name="amount_paid" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Month (YYYY-MM-DD):</label>
+                        <input class="form-control" type="date" name="month" required>
+                    </div>
+
+                    {% if requests %}
+                        <div class="mb-3">
+                            <label>Select Consumable Request:</label>
+                            <select name="consumable_request" class="form-control" required>
+                                <option value="">-- Choose a request --</option>
+                                {% for req in requests %}
+                                    <option value="{{ req.id }}">
+                                        Request #{{ req.id }} | {{ req.date_created|date:"F Y" }} | ₦{{ req.calculate_total_price }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% else %}
+                        <p class="text-danger">No unpaid consumable requests found for this user.</p>
+                    {% endif %}
+
+                    <div class="d-grid">
+                        <button class="btn btn-primary" type="submit">Submit Payment</button>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

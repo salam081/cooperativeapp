@@ -1,0 +1,104 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="container-fluid  px-4">
+    <form method="GET" action="{% url 'all_member_saving_search' %}" class="mt-2 mb-3">
+        <div class="row g-3">
+            <div class="col-md-4 col-sm-6">
+                <label for="datefrom">Date From</label>
+                <input class="form-control" type="date" name="datefrom">
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <label for="dateto">Date To</label>
+                <input class="form-control" type="date" name="dateto">
+            </div>
+           
+            <!-- <div class="col-md-4 col-sm-6">
+                <label>Select Status</label>
+                <select class="form-select" name="status">
+                    <option value="" {% if not status %}selected{% endif %}>All</option>
+                    <option value="Pending" {% if status == "Pending" %}selected{% endif %}>Pending</option>
+                    <option value="Approved" {% if status == "Approved" %}selected{% endif %}>Approved</option>
+                </select>
+            </div> -->
+            
+        </div>
+        <button type="submit" class="btn btn-success mt-2 justify-content-center">Search</button>
+    </form>
+    
+    {% if member %}
+        
+    
+    <div class="card sherdow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table  align-middle table-bordered table-hover">
+                    <thead class="table-primary">
+                <thead>
+                    <th>S\N</th>
+                    <th>Member</th>
+                    <th>Month</th>
+                    <th>monthly Deduction </th>
+                    <th>Monthly Savings</th>
+                </thead>
+                <tbody>
+                    
+                    {% for m in member %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{m.member}}</td>
+                        <td>{{m.month}}</td>
+                        <td>₦{{m.original_amount}}</td>
+                        <td>₦{{m.month_saving}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            
+        </div>
+    </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+            Showing page {{ member.number }} of {{ member.paginator.num_pages }}
+        </div>
+    
+        <nav>
+            <ul class="pagination justify-content-end">
+                {% if member.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ member.previous_page_number }}&datefrom={{ datefrom }}&dateto={{ dateto }}{% if status %}&status={{ status }}{% endif %}">Previous</a>
+                    </li>
+                {% endif %}
+    
+                {% for num in member.paginator.page_range %}
+                    {% if member.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num >= member.number|add:'-2' and num <= member.number|add:'2' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}&datefrom={{ datefrom }}&dateto={{ dateto }}{% if status %}&status={{ status }}{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+    
+                {% if member.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ member.next_page_number }}&datefrom={{ datefrom }}&dateto={{ dateto }}{% if status %}&status={{ status }}{% endif %}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    
+</div>
+
+    {% else %}
+    <p colspan="6" class="text-center">No requests found for the selected criteria.</p>
+    {% endif %}
+   
+
+</div>
+    {% endblock content %}

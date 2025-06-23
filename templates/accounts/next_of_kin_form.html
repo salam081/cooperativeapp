@@ -1,0 +1,36 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <h2 class="mb-4">Next of Kin Details</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="full_names" class="form-label">Full Name</label>
+            <input type="text" name="full_names" id="full_names" class="form-control" value="{{ kin.full_names }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="phone_no" class="form-label">Phone Number</label>
+            <input type="text" name="phone_no" id="phone_no" class="form-control" value="{{ kin.phone_no }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" name="email" id="email" class="form-control" value="{{ kin.email }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <textarea name="address" id="address" class="form-control" rows="3">{{ kin.address }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success">Save Next of Kin</button>
+    </form>
+</div>
+
+</div>
+
+{% endblock content %}

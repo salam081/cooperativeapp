@@ -1,0 +1,39 @@
+
+
+
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>All Consumable Requests Grouped by Month</h2>
+
+    <div class="row row-cols-1 p-4  ">
+        {% for month, details in grouped_list %}
+        <div class="col-md-4 py-2">
+            <div class="card h-100 shadow bg-body-tertiary rounded">
+                <div class="card-body text-dark  py-2">
+                    <a class="btn btn-primary "  href="{% url 'consumable_details' month=month|date:'Y-m' %}" class="fs-6 text-decoration-none"> {{ month|date:"F Y" }} </a>
+                    <a class="btn btn-info mt-2" href="{% url 'upload_consumable_payment' %}?month={{ month|date:'Y-m' }}" class="btn btn-sm btn-link text-primary">Upload Consumable Payment</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+<!-- <div class="container mt-4">
+    <h2>All Consumable Requests Grouped by Month</h2>
+{% for month, details in grouped_list %}
+<div class="card col-md-2 my-2  shadow  bg-body-tertiary rounded">
+    
+    <div class="card-header text-dark text-center">
+        <a href="{% url 'consumable_details' month=month|date:'Y-m' %}" class="fs-4">
+            {{ month|date:"F Y" }}
+        </a>
+    </div>
+</div>
+{% endfor %}
+
+</div> -->
+

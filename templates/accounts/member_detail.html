@@ -1,0 +1,65 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+    
+    <div class="card mb-4 shadow-lg">
+        <div class="card-header text-center bg-primary text-white">Your Basic Information</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Name:</strong> {{ member.member.first_name }} {{ member.member.last_name }} {{ member.member.other_name }}</p>
+                    <p><strong>Username:</strong> {{ member.member.username }}</p>
+                    <p><strong>Date of Birth:</strong> {{ member.member.date_of_birth }}</p>
+                    <p><strong>Department:</strong> {{ member.member.department }}</p>
+                    <p><strong>Unit:</strong> {{ member.member.unit }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Member Code:</strong> {{ member.member.member_number }}</p>
+                    <p><strong>IPPIS:</strong> {{ member.ippis }}</p>
+                    <!-- <p><strong>Total Savings:</strong> ₦{{ member.total_savings }}</p> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if address %}
+    <div class="card mb-4 shadow-lg">
+        <div class="card-header bg-success text-white">Address</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Email:</strong> {{ address.email }}</p>
+                    <p><strong>Phone 1:</strong> {{ address.phone1 }}</p>
+                    <p><strong>Phone 2:</strong> {{ address.phone2 }}</p>
+                    <p><strong>Country:</strong> {{ address.country.name }}</p>
+                    <p><strong>State of Origin:</strong> {{ address.state_of_origin }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>LGA:</strong> {{ address.local_government_area }}</p>
+                    <p><strong>Address:</strong> {{ address.address }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if next_of_kin %}
+    <div class="card shadow-lg">
+        <div class="card-header bg-info text-white">Next of Kin</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Full Names:</strong> {{ next_of_kin.full_names }}</p>
+                    <p><strong>Phone:</strong> {{ next_of_kin.phone_no }}</p>
+                </div>
+                <div class="col-md-6">
+                     <p><strong>Email:</strong> {{ next_of_kin.email }}</p>
+                     <p><strong>Address:</strong> {{ next_of_kin.address }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}

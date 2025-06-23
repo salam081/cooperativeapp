@@ -1,0 +1,39 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4 col-md-6">
+    <div class="card shadow ">
+        <div class="card-body">
+            <h5 class="text-primary text-center">Upload Monthly Consumable Payments</h5>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label>Select Consumable Request:</label>
+                  <select name="selected_month" class="form-control" required>
+    <option value="">Choose</option>
+    {% for month, details in grouped_list %}
+        <option value="{{ month|date:'Y-m' }}">
+            Request | {{ month|date:"F Y" }}
+        </option>
+    {% endfor %}
+</select>
+
+                </div>
+
+                <div class="mb-3">
+                    <label for="excel_file" class="form-label">Upload Excel File</label>
+                    <input type="file" name="excel_file" id="excel_file" class="form-control" accept=".xls,.xlsx"
+                        aria-label="Select Excel file containing payment data">
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br>
+    <p>The CSV should **contain IPPIS and amount only**. The **month** is now selected here instead of being in the CSV.
+    </p>
+</div>
+{% endblock %}

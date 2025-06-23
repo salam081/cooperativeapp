@@ -1,0 +1,116 @@
+{% extends "base/base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow col-md-12">
+        <div class="card-body">
+           <h4 class="mb-3 text-center">
+        {% if selected_type %}
+        {{ selected_type|title }}
+        {% endif %}
+         Repayments List
+    </h4>
+    <form method="get" class="row g-3 mb-3">
+        <div class="col-md-4">
+            <label>Year</label>
+            <select name="year" class="form-control">
+                <option value="">All Years</option>
+                {% for y in years %}
+                <option value="{{ y }}" {% if selected_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label>Loan Type</label>
+            <select name="loan_type" class="form-control">
+                <option value="">All Types</option>
+                {% for lt in loan_types %}
+                <option value="{{ lt }}" {% if selected_type|stringformat:"s" == lt|stringformat:"s" %}selected{% endif %}>
+                    {{ lt|title }}
+                </option>
+
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
+        </div>
+    </form>
+  
+    <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <!-- <th>IPPIS</th> -->
+                <th>Member</th>
+                <th class="text-nowrap text-truncate" style="max-width: 250px;">Loan Type</th>
+                <th class="text-nowrap text-truncate" style="max-width: 250px;">Amount Paid</th>
+                <th class="text-nowrap text-truncate" style="max-width: 250px;">Total Paid</th>
+                <th class="text-nowrap text-truncate" style="max-width: 250px;">Balance Remaining</th>
+                <th class="text-nowrap text-truncate" style="max-width: 250px;">Repayment Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in page_obj %}
+            <tr>
+                <!-- <td>{{ item.repayment.loan_request.member.ippis }}</td> -->
+                <td class="text-nowrap text-truncate" style="max-width: 250px;">{{ item.repayment.loan_request.member }}</td>
+                <!-- <td>{{ item.repayment.loan_request.loan_type.name }}</td> -->
+                 <td class="text-nowrap text-truncate" style="max-width: 250px;">
+                    {% if "short" in item.repayment.loan_request.loan_type.name|lower %}
+                        ST/Loan
+                    {% elif "long" in item.repayment.loan_request.loan_type.name|lower %}
+                        LT/Loan
+                    {% else %}
+                        {{ item.repayment.loan_request.loan_type.name }}
+                    {% endif %}
+                    </td>
+
+                <td>₦{{ item.repayment.amount_paid|floatformat:2 }}</td>
+                <td>₦{{ item.total_paid|floatformat:2 }}</td>
+                <td>₦{{ item.balance_remaining|floatformat:2 }}</td>
+                <td class="text-nowrap text-truncate" style="max-width: 250px;">{{ item.repayment.repayment_date|date:"F Y" }}</td>
+            </tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center text-primary fs-2">No repayments found.</td>
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+    </table>
+    </div>
+     <div class="mt-3 d-flex justify-content-between">
+    <div class="text-start text-primary fs-4">
+        <strong>Total Amount Paid:</strong> ₦{{ total_sum_paid|floatformat:2 }}
+    </div>
+    <div class="text-end text-primary fs-4">
+        <strong>Total Remaining Balance:</strong> ₦{{ total_sum_remaining|floatformat:2 }}
+    </div>
+</div>
+
+    <!-- Pagination controls -->
+    <div class="d-flex justify-content-center">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                    href="?page={{ page_obj.previous_page_number }}&year={{ selected_year }}&loan_type={{ selected_type }}">Previous</a>
+            </li>
+            {% endif %}
+            <li class="page-item disabled">
+                <a class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</a>
+            </li>
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                    href="?page={{ page_obj.next_page_number }}&year={{ selected_year }}&loan_type={{ selected_type }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

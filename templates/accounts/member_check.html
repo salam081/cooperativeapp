@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+ 
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="card shadow-lg rounded">
+              <div class="card-header text-center bg-primary text-white">
+                <h4>Member Check</h4>
+              </div>
+              <div class="card-footer text-muted text-center">
+                {% if messages %}
+                  {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} mt-2 mb-0">
+                      {{ message }}
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              </div>
+              <div class="card-body">
+                <form method="POST" novalidate>
+                  {% csrf_token %}
+                  
+                  <div class="mb-3">
+                    <!-- <label for="username" class="form-label">Member Code</label> -->
+                    <input type="text" name="ippis" id="username" class="form-control" placeholder="Enter Yoyr Code" required>
+                  </div>
+      
+                
+      
+                  <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Check</button>
+                  </div>
+                </form>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+</body>
+</html>

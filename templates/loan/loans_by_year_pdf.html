@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Loan Report</title>
+    <style>
+        th{
+            background-color:rgb(33, 30, 30);
+            color: white;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 3px;
+            text-align: left;
+        }
+        p{
+            padding-top: 20px;
+            font-size: 20px;
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Approved Loans For - {{ loan_type.name }} </h2>
+    <!-- - {{ year }} -->
+
+    <!-- <p>Total Approved: ₦{{ totals_by_status.approved|default:0 }}</p> -->
+
+    <table>
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <!-- <th>Amount</th> -->
+                <th>Approved Amount</th>
+                <th>Bank</th>
+                <th>BankCode</th>
+                <th>Status</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan in loanobj %}
+            <tr>
+                <td>{{ loan.member.member.first_name }}-{{ loan.member.member.last_name }}</td>
+                <td>&#8358;{{ loan.approved_amount }}</td>
+                <td>{{ loan.bank_name.name }}</td>
+                <td>{{ loan.bank_code.name }}</td>
+                <td>{{ loan.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <ul>
+        <p>Total Approved Amount : &#8358;{{ totals_by_status.approved|default:0 }}</p>
+    </ul>
+</body>
+
+</html>

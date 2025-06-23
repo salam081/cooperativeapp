@@ -1,0 +1,84 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Request Consumables{% endblock %}
+
+{% block content %}
+<div class="container mt-1 col-md-12">
+
+    <!-- {% if messages %}
+    <div class="mt-3">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %} -->
+
+    <h3 class="text-center">Request Consumables</h3>
+
+    <div class="row">
+        <!-- Item List -->
+        <div class="card col-md-4">
+            <div class="card-header">Available Items and Prices</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table text-start bg-light align-middle table-bordered table-hover mb-0">
+                        <thead>
+                            <tr class="text-dark">
+                                <th scope="col">S/N</th>
+                                <th scope="col">Item</th>
+                                <th scope="col">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ item.title }}</td>
+                                <td>₦{{ item.price }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">No items available</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Request Form -->
+        <div class="card bg-light col-md-8">
+            <h4 class="text-center text-primary">Select Quantity for Each Item</h4>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    {% for item in items %}
+                    <div class="row mb-3 align-items-center">
+                        <div class="col-md-6">
+                            <label class="form-label" for="quantity_{{ item.id }}">
+                                {{ item.title }} (₦{{ item.price }})
+                            </label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="number" class="form-control" name="quantity_{{ item.id }}" id="quantity_{{ item.id }}"
+                                   min="0" value="0" >
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="mb-3">
+                        <label for="loan_term_months" class="form-label">Loan Term (Months)</label>
+                        <input type="number" min="1" class="form-control" id="loan_term_months" name="loan_term_months" required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

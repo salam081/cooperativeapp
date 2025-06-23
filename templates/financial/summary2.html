@@ -1,0 +1,184 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+
+{% block content %}
+<h2 class="text-center mb-2">Monthly Summary new</h2>
+
+<div class="container-fluid px-4">
+    <div class="rounded p-4">
+
+        <h3 class="mt-3 text-primary">Savings</h3>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-light">
+                    <tr>
+                        <th>Month</th>
+                        <th>Year</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in savings_page %}
+                    <tr>
+                        <td>{{ item.month }}</td>
+                        <td>{{ item.year }}</td>
+                        <td>₦{{ item.total|floatformat:2|intcomma }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="text-end fw-bold">Total Savings: ₦{{ total_savings|floatformat:2|intcomma }}</p>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if savings_page.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ savings_page.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ savings_page.number }} of {{ savings_page.paginator.num_pages }}.
+                </span>
+
+                {% if savings_page.has_next %}
+                    <a href="?page={{ savings_page.next_page_number }}">next</a>
+                    <a href="?page={{ savings_page.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+
+        <hr>
+
+        <h3 class="text-primary">Admin Fee</h3>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-light">
+                    <tr><th>Month</th><th>Year</th><th>Total</th></tr>
+                </thead>
+                <tbody>
+                    {% for item in interest_page %}
+                    <tr>
+                        <td>{{ item.month }}</td>
+                        <td>{{ item.year }}</td>
+                        <td>₦{{ item.total|floatformat:2|intcomma }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="text-end fw-bold">Total Interest: ₦{{ total_interest|floatformat:2|intcomma }}</p>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if interest_page.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ interest_page.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ interest_page.number }} of {{ interest_page.paginator.num_pages }}.
+                </span>
+
+                {% if interest_page.has_next %}
+                    <a href="?page={{ interest_page.next_page_number }}">next</a>
+                    <a href="?page={{ interest_page.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+
+        <hr>
+
+        <h3 class="text-primary">Loanable</h3>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped text-center">
+                <thead class="table-light">
+                    <tr><th>Month</th><th>Year</th><th>Total</th></tr>
+                </thead>
+                <tbody>
+                    {% for item in loanable_page %}
+                    <tr>
+                        <td>{{ item.month }}</td>
+                        <td>{{ item.year }}</td>
+                        <td>₦{{ item.total|floatformat:2|intcomma }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="text-end fw-bold">Total Loanable: ₦{{ total_loanable|floatformat:2|intcomma }}</p>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if loanable_page.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ loanable_page.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ loanable_page.number }} of {{ loanable_page.paginator.num_pages }}.
+                </span>
+
+                {% if loanable_page.has_next %}
+                    <a href="?page={{ loanable_page.next_page_number }}">next</a>
+                    <a href="?page={{ loanable_page.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+
+        <hr>
+
+        <h3 class="text-primary">Investment</h3>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped text-center">
+                <thead class="table-light">
+                    <tr><th>Month</th><th>Year</th><th>Total</th></tr>
+                </thead>
+                <tbody>
+                    {% for item in investment_page %}
+                    <tr>
+                        <td>{{ item.month }}</td>
+                        <td>{{ item.year }}</td>
+                        <td>₦{{ item.total|floatformat:2|intcomma }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="text-end fw-bold">Total Investment: ₦{{ total_investment|floatformat:2|intcomma }}</p>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if investment_page.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ investment_page.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ investment_page.number }} of {{ investment_page.paginator.num_pages }}.
+                </span>
+
+                {% if investment_page.has_next %}
+                    <a href="?page={{ investment_page.next_page_number }}">next</a>
+                    <a href="?page={{ investment_page.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row">
+            <div class="text-center col-sm-6">
+                <h5 class="text-success">Grand Total For All Members Savings</h5>
+                <p class="lead fw-bold">₦{{ total_savings|floatformat:2 }}</p>
+            </div>
+            <div class="text-center col-sm-6">
+                <h5 class="text-success">Grand Total  Of Savings And Admin Fee</h5>
+                <p class="lead fw-bold">₦{{ grand_total|floatformat:2 }}</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+{% endblock content %}

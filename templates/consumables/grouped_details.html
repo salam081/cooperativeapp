@@ -1,0 +1,74 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Details for {{ month|date:"F Y" }}</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-light">
+                <tr>
+                    <th>Full name</th>
+                    <th>Items</th>
+                    <th>Quantities</th>
+                    <th>Prices</th>
+                    <th>Totals</th>
+                    <th>Status</th>
+                    <th>Total  Amount</th>
+                    <!-- <th>Paid So Far</th>
+                    <th>Last Payment</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for group in grouped_data %}
+                <tr>
+                    <td>{{ group.user.first_name }} {{ group.user.last_name }}</td>
+                    <td>
+                        {% for item in group.items %}
+                            {{ item.item.title }}<br>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for item in group.items %}
+                            {{ item.quantity }}<br>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for item in group.items %}
+                            ₦{{ item.item_price|floatformat:2 }}<br>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for item in group.items %}
+                            ₦{{ item.total_price|floatformat:2 }}<br>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for item in group.items %}
+                            {{ item.request.status }}<br>
+                        {% endfor %}
+                    </td>
+                    <td><strong>₦{{ group.total|floatformat:2 }}</strong></td>
+                    <!-- <td>₦{{ group.amount_paid|floatformat:2 }}</td>
+                    <td>₦{{ group.current_payment|floatformat:2 }}</td> -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <ul class="list-group">
+        <li class="list-group-item d-flex bg-warning col-md-4 justify-content-between">
+            <strong>Total Approved:</strong>
+            <span>₦{{ approved_total|floatformat:2 }}</span>
+        </li>
+        <li class="list-group-item d-flex bg-primary mt-2 col-md-4 justify-content-between">
+            <strong>Total Pending:</strong>
+            <span>₦{{ pending_total|floatformat:2 }}</span>
+        </li>
+        <li class="list-group-item d-flex bg-success mt-2 col-md-4 justify-content-between">
+            <strong>Total Paid:</strong>
+            <span>₦{{ paid_total|floatformat:2 }}</span>
+        </li>
+    </ul>
+</div>
+{% endblock %}

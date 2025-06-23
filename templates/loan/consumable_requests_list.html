@@ -1,0 +1,53 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<h2>All Requested Consumables</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Member</th>
+            <th>Items</th>
+            <th>Quantity</th>
+            <th>ItemsPrice </th>
+            <th>Status</th>
+            <th>Date</th>
+            <!-- <th>Approved Amount (₦)</th> -->
+            <th> Term (Months)</th>
+            <th>MonthlyPayment (₦)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in all_requests %}
+        <tr>
+            <td>{{ request.member }}</td>
+            <td>{{ request.consumable_type }}</td>
+            <td>{{ request.quantity }}</td>
+            <td>{{ request.items_price }}</td>
+            <td>{{ request.status }}</td>
+            <td>{{ request.application_date }}</td>
+            <!-- <td>{{ request.approved_amount|default:"-" }}</td> -->
+            <td>{{ request.term_months|default:"-" }}</td>
+            <td>
+                {% if request.monthly_payment %}
+                    ₦{{ request.monthly_payment|floatformat:2 }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>
+                {% if request.status == 'pending' %}
+                <a href="{% url 'approve_consumable_request' request.id %}" class="btn btn-success btn-sm">Approve</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<br>
+
+
+{% endblock %}

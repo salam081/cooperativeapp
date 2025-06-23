@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4 col-md-12">
+    <div class="card">
+        <h5 class="card-header text-primary text-center">All Rejected Loans </h5>
+        <div class="card-body">
+            
+            {% if rejected %}
+            <div class="table">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Eull Name</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Loan Type</th>
+                            <!-- <th scope="col">Loan Type</th> -->
+                            <!-- <th scope="col">RequestedAmount</th> -->
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for r in rejected %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{r.member}}</td>
+                            <td>{{r.amount}}</td>
+                            <td>{{r.loan_type}}</td>
+                            <td>
+                                <a class="btn btn-danger" href="{% url 'delete_reject_loan' r.id %}"><i class="bi bi-trash"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+                {% else %}
+                       <h3 class="text-center"> No Reject Loan</h3>  
+            {% endif %}
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

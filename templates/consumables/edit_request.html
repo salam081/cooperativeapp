@@ -1,0 +1,36 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4 col-md-6">
+    <div class="card">
+        <div class="card-body">
+            <form method="POST">
+  {% csrf_token %}
+
+  <label for="loan_term_months">Loan Term (Months):</label>
+  <input type="number" name="loan_term_months" value="{{ details.0.loan_term_months|default:1 }}" min="1">
+
+  <table>
+    <tr>
+      <th>Item</th>
+      <th>Quantity</th>
+    </tr>
+    {% for item in items %}
+      {% with current_detail=details|get_item:item.id %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>
+            <input type="number" name="quantity_{{ item.id }}" value="{{ current_detail.quantity|default_if_none:0 }}" min="0">
+          </td>
+        </tr>
+      {% endwith %}
+    {% endfor %}
+  </table>
+
+  <button type="submit">Update Request</button>
+</form>
+
+        </div>
+    </div>
+</div>
+    {% endblock content %}

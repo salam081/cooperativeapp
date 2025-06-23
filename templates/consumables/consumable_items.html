@@ -1,0 +1,96 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Add Item Form -->
+    <div class="row justify-content-center">
+        <div class="card col-md-6 bg-light">
+            <div class="card-body">
+                <h5 class="card-title text-center mb-3">Add Consumable Item</h5>
+                <form method="POST" action="{% url 'consumable_items' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+
+                        <input type="text" class="form-control" name="title" placeholder="Enter Item Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="price"  placeholder="Enter Item Price">
+                    </div>
+                    <input type="hidden" name="action" value="edit">
+                    <button type="submit" class="btn btn-primary w-100">Add Item</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table of Consumables -->
+    <div class="card mt-4 bg-light">
+        <div class="card-body">
+            <h5 class="card-title text-center mb-3">Consumable Items List</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover text-center">
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Price</th>
+                            <th>Available</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in consumables %}
+                        <tr>
+                            <td>{{ c.title }}</td>
+                            <td>{{ c.price }}</td>
+                            <td>
+                                <!-- Toggle availability -->
+                                <form method="POST" action="{% url 'consumable_items' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="item_id" value="{{ c.id }}">
+                                    <input type="hidden" name="action" value="toggle">
+                                    <div class="form-check form-switch d-flex justify-content-center">
+                                        <input class="form-check-input" type="checkbox" role="switch"
+                                            id="available_{{ c.id }}" name="available"
+                                            onChange="this.form.submit();" {% if c.available %}checked{% endif %}>
+                                    </div>
+                                </form>
+                            </td>
+                            <td>
+                                <!-- Toggle edit form -->
+                                <button class="btn btn-sm btn-warning mx-2" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#editForm{{ c.id }}">
+                                    <i class="fa fa-pen "></i>
+                                </button>
+
+                                <!-- Delete link -->
+                                <a href="{% url 'delete_item' c.id %}" class="btn btn-sm btn-danger"><i class="fa fa-trash "></i></a>
+
+                            </td>
+                        </tr>
+                        <!-- Edit form collapsible -->
+                        <tr class="collapse" id="editForm{{ c.id }}">
+                            <td colspan="4">
+                                <form method="POST" action="{% url 'consumable_items' %}" class="row g-2 align-items-center">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="item_id" value="{{ c.id }}">
+                                    <input type="hidden" name="action" value="edit">
+                                    <div class="col-md-4">
+                                        <input type="text" name="title" value="{{ c.title }}" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="text" name="price" value="{{ c.price }}" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="submit" class="btn btn-success w-100">Save</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

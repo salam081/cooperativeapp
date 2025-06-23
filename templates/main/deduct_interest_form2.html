@@ -1,0 +1,78 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-5 col-md-6">
+    <div class="card shardow">
+        <div class="card-body">
+            <h4 class="text-center text-primary">Deduct Monthly Admin Fee</h4>
+            <form method="post" action="{% url 'deduct_interest' year='0' month='0' %}" id="interestForm">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="month" class="form-label">Select Month:</label>
+                    <input type="month" class="form-control" id="month" name="month" required>
+                </div>
+                <div class="mb-3">
+                    <label for="deduction_amount" class="form-label">Amount to Deduct (₦):</label>
+                    <input type="number" class="form-control" id="deduction_amount" name="deduction_amount" placeholder="Enter Amount" step="0.01" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Deduct</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('interestForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const monthInput = document.getElementById('month').value;
+    const deductionAmountInput = document.getElementById('deduction_amount').value;
+
+    if (monthInput && deductionAmountInput) {
+        const [year, month] = monthInput.split('-');
+        const url = `/deduct_interest/${year}/${parseInt(month)}/`;
+
+        const formData = new FormData();
+        formData.append('month', monthInput);
+        formData.append('deduction_amount', deductionAmountInput);
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: formData,
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = "{% url 'interest_form' %}";
+            } else {
+                alert('Error submitting the form.');
+            }
+        })
+        .catch(error => {
+            alert('Network error. Please try again.');
+            console.error('Fetch error:', error);
+        });
+    } else {
+        alert('Please select a month and enter the deduction amount.');
+    }
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            if (cookie.startsWith(name + '=')) {
+                cookieValue = cookie.substring(name.length + 1);
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+{% endblock content %}

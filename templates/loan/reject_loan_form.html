@@ -1,0 +1,19 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="container mt-4 justify-content-center">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="mb-4">Reject Loan Request #{{ loan.id }}</h4>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group col-md-6">
+                    <label for="rejection_reason">Rejection Reason</label>
+                    <textarea class="form-control" id="rejection_reason" name="rejection_reason" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-danger mt-3">Reject Loan</button>
+                <a href="{% url 'requested_loan' %}" class="btn btn-secondary mt-3">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

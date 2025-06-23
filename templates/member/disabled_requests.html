@@ -1,0 +1,9 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h4 class="text-danger">Request Unavailable</h4>
+    <h3 class="text-center text-danger">{{ message }}</h3>
+    <a href="{% url 'member_dashboard' %}" class="btn btn-primary mt-3">Return to Dashboard</a>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4 col-md-6">
+    <div class="card">
+        <h5 class="card-header text-primary text-center">Add Single Loan payment </h5>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <p>Are you sure you want to delete "{{ loan_type.name }}"?</p>
+                <button class="bnt btn-danger" type="submit">Yes, delete</button>
+                <a href="{% url 'loan_year_list' %}">Cancel</a>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
